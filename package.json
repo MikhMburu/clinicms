@@ -1,0 +1,22 @@
+{
+  "name": "clinicms",
+  "version": "1.0.0",
+  "description": "An LAN app for managing staff and patients in a clinic",
+  "main": "index.js",
+  "author": "Mikhail N",
+  "license": "MIT",
+  "dependencies": {
+    "@apollo/server": "^4.3.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "graphql": "^16.6.0",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^6.8.4"
+  },
+  "devDependencies": {
+    "concurrently": "^7.6.0",
+    "nodemon": "^2.0.20"
+  }
+}
