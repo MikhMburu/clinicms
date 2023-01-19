@@ -1,7 +1,8 @@
 {
   "name": "clinicms",
   "version": "1.0.0",
-  "description": "An LAN app for managing staff and patients in a clinic",
+  "type": "module",
+  "description": "A LAN app for managing staff and patients in a clinic",
   "main": "index.js",
   "author": "Mikhail N",
   "license": "MIT",
@@ -18,5 +19,9 @@
   "devDependencies": {
     "concurrently": "^7.6.0",
     "nodemon": "^2.0.20"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "server": "nodemon index.js"
   }
 }
