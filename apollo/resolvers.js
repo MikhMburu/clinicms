@@ -1,68 +1,156 @@
 // Import libraries
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import { GraphQLError } from "graphql";
 // Import files and functions
 import Person from "../mongo/schema/Person.js";
 import Notes from "../mongo/schema/Notes.js";
-import Appointment from "../mongo/schema/Appointment.js";
-import {mongoURI, testURI, secret} from "../config/index.js"
-import db  from "../mongo/db.js";
+import { mongoURI, testURI, secret } from "../config/index.js";
+import db from "../mongo/db.js";
+import { make_appointment, hashPassword } from "../utilities/func.js";
+import {isEmpty} from "../utilities/isEmpty.js";
+
 
 // Define/Initialize functions
 db(mongoURI);
+// Create array of objects to store appointments
+const appointmts = [];
 
 const resolvers = {
-  Note:{
-    patient: async (parent, args)=>{
+  Person: {
+    history: async (parent) => {
       try {
-        const res = await Person.findById(parent.patientID)
-        return res
+        const res = await Notes.find({ patientID: parent._id });
+        return res;
       } catch (err) {
-        console.log("Unable to retrieve data")
-        throw err
+        console.log("Unable to retrieve persons");
+        throw err;
       }
-    }
+    },
+  },
+  Note: {
+    patient: async (parent, args) => {
+      try {
+        const res = await Person.findById(parent.patientID);
+        return res;
+      } catch (err) {
+        console.log("Unable to retrieve data");
+        throw err;
+      }
+    },
   },
   Appointment: {
-    patient: async (parent, args)=>{
+    patient: async (parent, args) => {
       try {
-        const res = await Person.findById(parent.patientID)
-        return res
+        const res = await Person.findById(parent.patientID);
+        return res;
       } catch (err) {
-        console.log("Unable to retrieve data")
-        throw err
+        console.log("Unable to retrieve data");
+        throw err;
       }
-    }
+    },
   },
-  Query:{
-    greet: ()=>"Hello..This is clinicms" ,
-    getPersons: async(_, args)=>{
+  Query: {
+    getPersons: async (_, args) => {
       try {
-        const res = await Person.find()
+        const res = await Person.find();
         return res;
       } catch (err) {
-        console.log("Unable to retrieve data")
-        throw err
+        console.log("Unable to retrieve data");
+        throw err;
       }
     },
-    getNotes: async(_, args)=>{
+    getNotes: async (_, args) => {
       try {
-        const res = await Notes.find()
+        const res = await Notes.find();
         return res;
       } catch (err) {
-        console.log("Unable to retrieve data")
-        throw err
+        console.log("Unable to retrieve data");
+        throw err;
       }
     },
-    getAppointments: async(_, args)=>{
+    getAppointments: () => appointmts,
+  },
+  Mutation: {
+    makeAppointment: (_, args) => {
+      let patient = make_appointment(args.id);
+      appointmts.push(patient);
+
+      return patient;
+    },
+    addPerson: async (_, args) => {
+      const {
+        natID,
+        surname,
+        otherNames,
+        dob,
+        gender,
+        phoneno,
+        email,
+        role,
+        password,
+      } = args.input;
+
       try {
-        const res = await Appointment.find()
+        let newPerson;
+        if(isEmpty(password)){
+          password = "clinicms1234"
+        }   
+          const hashedPswd = await hashPassword(password);
+          newPerson = new Person({
+            natID,
+            surname,
+            otherNames,
+            dob,
+            gender,
+            phoneno,
+            email,
+            role,
+            password: hashedPswd,
+          });
+        
+        
+        const res = await newPerson.save();
         return res;
       } catch (err) {
-        console.log("Unable to retrieve data")
-        throw err
+        console.log("Internal server error");
+        throw new GraphQLError(
+          "Unable to create person in database",
+          "DATABASE_ERROR"
+        );
       }
-    }
-  }
-}
+    },
+    login: async (_, args) => {
+      const { email, password } = args.input;
+
+      // Get login details
+      try {
+        // Compare bcrypt passwords
+        const res = await Person.findOne({ email });
+        const isMatch = await bcrypt.compare(password, res.password);
+        // If login details correct, create token
+        if (!isMatch) {
+          return "Password incorrect";
+        }
+        const token = jwt.sign(
+          {
+            natID: res.natID,
+            surname: res.surname,
+            otherNames: res.otherNames,
+            role: res.role,
+          },
+          secret,
+          {
+            expiresIn: "8h",
+          }
+        );
+        return token;
+      } catch (err) {
+        console.log("Internal server error.");
+        throw new GraphQLError("Unable to log you in", "LOGIN_ERROR");
+      }
+    },
+  },
+};
 
 export default resolvers;

@@ -1,9 +1,8 @@
-// import {ApolloServer} from "@apollo/server";
-// import {startStandaloneServer} from "@apollo/server/standalone";
 
 const typeDefs = `#graphql
 #Types 
   type Person  {
+    _id: ID
     natID: String  
     surname:  String 
     otherNames: String
@@ -12,19 +11,36 @@ const typeDefs = `#graphql
     phoneno:String  
     email: String
     role: String
-    password:  String
+    password: String
+    history: [Note]
   }
-
   type Note {
     _noteID: ID!
     patientID: String!
     patient: Person!
   }
-
   type Appointment {
     _apmtID: ID!
     patientID: String!
-    patient: Person!
+    patient: Person
+    checkin: String
+  }
+# Input
+  input PersonInput {
+    natID: String  
+    surname:  String 
+    otherNames: String
+    dob: String  
+    gender: String  
+    phoneno:String  
+    email: String
+    role: String
+    password: String  
+  }
+
+  input LoginInput {
+    email: String!
+    password: String!
   }
 
 # Native
@@ -34,7 +50,11 @@ const typeDefs = `#graphql
     getPersons: [Person]
     getAppointments: [Appointment]
   }
-
+  type Mutation {
+    login(input: LoginInput): String!
+    addPerson(input: PersonInput): Person
+    makeAppointment(id: String): Appointment
+  }
   
 `;
 
