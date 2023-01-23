@@ -21,7 +21,7 @@ const typeDefs = `#graphql
   }
   type Appointment {
     _apmtID: ID!
-    patientID: String!
+    patientID: ID!
     patient: Person
     checkin: String
   }
@@ -49,11 +49,13 @@ const typeDefs = `#graphql
     getNotes: [Note]
     getPersons: [Person]
     getAppointments: [Appointment]
+    getOneAppointment(id: String): Appointment
   }
   type Mutation {
     login(input: LoginInput): String!
     addPerson(input: PersonInput): Person
     makeAppointment(id: String): Appointment
+    deleteAppointment(id: String): [Appointment]
   }
   
 `;

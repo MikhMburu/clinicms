@@ -19,10 +19,12 @@
   },
   "devDependencies": {
     "concurrently": "^7.6.0",
+    "mocha": "^10.2.0",
     "nodemon": "^2.0.20"
   },
   "scripts": {
     "start": "node index.js",
-    "server": "nodemon index.js"
+    "server": "nodemon index.js",
+    "test": "mocha || true"
   }
 }

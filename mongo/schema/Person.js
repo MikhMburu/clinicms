@@ -26,8 +26,7 @@ const personSchema = new Schema({
     type: String,
   },
   password: {
-    type: String,    
-    // clinicms1234 - password
+    type: String,  
   }
 },{timestamps: true})
 

@@ -14,7 +14,7 @@ import {isEmpty} from "../utilities/isEmpty.js";
 // Define/Initialize functions
 db(mongoURI);
 // Create array of objects to store appointments
-const appointmts = [];
+let appointmts = [];
 
 const resolvers = {
   Person: {
@@ -70,6 +70,12 @@ const resolvers = {
       }
     },
     getAppointments: () => appointmts,
+    getOneAppointment: (_,args)=>{
+      const {id}= args;
+      const appointment = appointmts.filter(apt=>apt._apmtID === id);
+
+      return appointment[0]
+    }
   },
   Mutation: {
     makeAppointment: (_, args) => {
@@ -77,6 +83,12 @@ const resolvers = {
       appointmts.push(patient);
 
       return patient;
+    },
+    deleteAppointment: (_, args)=>{
+      const {id} = args;
+
+      appointmts = appointmts.filter(apmt => apmt._apmtID !== id)
+      return appointmts;
     },
     addPerson: async (_, args) => {
       const {
