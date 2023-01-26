@@ -33,7 +33,7 @@ export const Form = () => {
         <div className="input-group mt-1">
           <span className=" input-group-text ">Sex</span>
           <select name="gender" className="form-select form-control">
-            <option selected>Choose gender</option>
+            <option defaultValue="">Choose gender</option>
             <option value="male">Male</option>
             <option value="female">Female</option>
             <option value="other">Other</option>
@@ -84,7 +84,7 @@ export const Form = () => {
             />
             <label
               className="form-check-label stretched-link"
-              for="firstCheckboxStretched"
+              htmlFor="firstCheckboxStretched"
             >
               Admin
             </label>
@@ -98,7 +98,7 @@ export const Form = () => {
             />
             <label
               className="form-check-label stretched-link"
-              for="secondCheckboxStretched"
+              htmlFor="secondCheckboxStretched"
             >
               Doctor
             </label>
@@ -112,7 +112,7 @@ export const Form = () => {
             />
             <label
               className="form-check-label stretched-link"
-              for="thirdCheckboxStretched"
+              htmlFor="thirdCheckboxStretched"
             >
               Receptionist
             </label>
