@@ -7,13 +7,10 @@ import Breadcrumbs from "../components/Breadcrumbs";
 import PersonForm from "../components/PersonForm";
 import PersonList from "../components/PersonList";
   // Files and functions
-import {displayPeople} from "../apollo-schema/query";
+// import {displayPeople} from "../apollo-schema/query";
 
 const WaitingRoom = () => {
-  const {data, loading} = useQuery(displayPeople);
-  if(!loading){
-    data && console.log(data)
-  }
+  
   return (
     
     <main className="main">

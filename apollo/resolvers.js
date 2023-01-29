@@ -79,10 +79,15 @@ const resolvers = {
   },
   Mutation: {
     makeAppointment: (_, args) => {
-      let patient = make_appointment(args.id);
-      appointmts.push(patient);
-
-      return patient;
+      try {
+        let patient = make_appointment(args.id);
+        appointmts.push(patient);
+  
+        return patient;
+        
+      } catch (err) {
+        console.log("Unable to make appointment\n", err)
+      }
     },
     deleteAppointment: (_, args)=>{
       const {id} = args;
@@ -105,10 +110,8 @@ const resolvers = {
 
       try {
         let newPerson;
-        if(isEmpty(password)){
-          password = "clinicms1234"
-        }   
-          const hashedPswd = await hashPassword(password);
+        let pswd = password || "clinicms1234"
+          const hashedPswd = await hashPassword(pswd);
           newPerson = new Person({
             natID,
             surname,
@@ -125,7 +128,7 @@ const resolvers = {
         const res = await newPerson.save();
         return res;
       } catch (err) {
-        console.log("Internal server error");
+        console.log("Internal server error\n", err);
         throw new GraphQLError(
           "Unable to create person in database",
           "DATABASE_ERROR"
